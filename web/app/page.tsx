@@ -14,13 +14,20 @@ export default function Home() {
             Create and edit documents in real-time with your team. 
             Experience seamless collaboration with our powerful text editor.
           </p>
-          <Link
-            href="/files"
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors"
-          >
-            <FileText className="h-5 w-5" />
-            Get Started
-          </Link>
+          <div className="flex items-center justify-center gap-4">
+            <Link
+              href="/signin"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-primary px-8 py-4 text-lg font-semibold text-primary hover:bg-primary/10 transition-colors"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
 
         {/* Features */}
@@ -63,10 +70,10 @@ export default function Home() {
             Ready to start collaborating?
           </p>
           <Link
-            href="/files"
+            href="/signup"
             className="text-primary font-semibold hover:underline"
           >
-            Go to Documents →
+            Create an account →
           </Link>
         </div>
       </div>

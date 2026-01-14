@@ -1,53 +1,43 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
-import { PartialBlock } from "@blocknote/core";
-import { useCreateBlockNote } from "@blocknote/react";
+import { useBlockNoteSync } from "@convex-dev/prosemirror-sync/blocknote";
+import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useEffect, useRef } from "react";
 
 interface EditorProps {
-  initialContent?: string;
-  onChange: (content: string) => void;
-  onReady?: () => void;
+  docId: Id<"docs">;
+  token: string;
 }
 
-export default function Editor({ initialContent, onChange, onReady }: EditorProps) {
-  const [isReady, setIsReady] = useState(false);
+export default function Editor({ docId, token }: EditorProps) {
+  const sync = useBlockNoteSync(api.prosemirror, docId);
+  const hasCreatedRef = useRef(false);
 
-  const editor = useCreateBlockNote({
-    initialContent: undefined,
-  });
-
-  // Initialize with content once
+  // Create initial document if it doesn't exist
   useEffect(() => {
-    if (editor && initialContent && !isReady) {
-      try {
-        const blocks = JSON.parse(initialContent) as PartialBlock[];
-        editor.replaceBlocks(editor.document, blocks);
-      } catch (e) {
-        console.log("Starting with empty editor");
-      }
-      setIsReady(true);
-      onReady?.();
-    } else if (editor && !initialContent && !isReady) {
-      setIsReady(true);
-      onReady?.();
+    if (!sync.isLoading && sync.editor === null && !hasCreatedRef.current) {
+      hasCreatedRef.current = true;
+      sync.create({ type: "doc", content: [] });
     }
-  }, [editor, initialContent, isReady, onReady]);
+  }, [sync.isLoading, sync.editor, sync]);
 
-  const handleChange = useCallback(() => {
-    if (editor) {
-      const blocks = editor.document;
-      onChange(JSON.stringify(blocks));
-    }
-  }, [editor, onChange]);
+  if (sync.isLoading) {
+    return (
+      <div className="min-h-[500px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
-  return (
-    <BlockNoteView
-      editor={editor}
-      onChange={handleChange}
-      theme="light"
-    />
+  return sync.editor ? (
+    <BlockNoteView editor={sync.editor} theme="light" />
+  ) : (
+    <div className="min-h-[500px] flex items-center justify-center">
+      <p className="text-muted-foreground">Initializing editor...</p>
+    </div>
   );
 }

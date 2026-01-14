@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // BlockNote doesn't support StrictMode with React 19
+  reactStrictMode: false,
 };
 
 export default nextConfig;

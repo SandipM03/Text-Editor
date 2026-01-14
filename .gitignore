@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+backend/.convex/build/
+backend/.turbo/
+backend/dist/
+web/.next/
+web/out/
+
+# Logs and caches
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.yarn-debug.log*
+.yarn-error.log*
+.pnpm-store/
+.next/cache/
+.vscode/
+.DS_Store
+
+# Env & local config
+.env*
+!.env.example
+
+# Testing / coverage
+coverage/
